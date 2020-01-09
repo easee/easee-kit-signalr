@@ -91,15 +91,14 @@ class DartIOHttpClient extends SignalRHttpClient {
           content = await utf8.decoder.bind(httpResp).join();
           // When using SSE and the uri has an 'id' query parameter the response is not evaluated, otherwise it is an error.
           if (isStringEmpty(uri.queryParameters['id'])) {
-            throw ArgumentError(
-                "Response Content-Type not supported: $contentTypeHeader");
+            return Future.error(ArgumentError("Response Content-Type not supported: $contentTypeHeader"));
           }
         }
 
         return SignalRHttpResponse(httpResp.statusCode,
             statusText: httpResp.reasonPhrase, content: content);
       } else {
-        throw HttpError(httpResp.reasonPhrase, httpResp.statusCode);
+        return Future.error(HttpError(httpResp.reasonPhrase, httpResp.statusCode));
       }
     });
   }
