@@ -100,6 +100,7 @@ class HubConnection {
     _receivedHandshakeResponse = false;
     // Set up the Future before any connection is started otherwise it could race with received messages
     _handshakeCompleter = Completer();
+
     await _connection.start(transferFormat: _protocol.transferFormat);
 
     _logger?.finer("Sending handshake request.");
@@ -117,7 +118,7 @@ class HubConnection {
     await _handshakeCompleter.future;
     _connectionState = HubConnectionState.Connected;
   }
-
+  
   /// Stops the connection.
   ///
   /// Returns a Promise that resolves when the connection has been successfully terminated, or rejects with an error.
@@ -240,8 +241,9 @@ class HubConnection {
     };
 
     final formatedMessage = _protocol.writeMessage(invocationMessage);
-    _sendMessage(formatedMessage).catchError((dynamic error) {
-      completer.completeError(error as Error);
+    _sendMessage(formatedMessage).catchError((dynamic error)
+    {
+        completer.completeError(error);
       _callbacks.remove(invocationMessage.invocationId);
     });
 
