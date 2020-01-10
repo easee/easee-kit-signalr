@@ -118,7 +118,7 @@ class HubConnection {
     await _handshakeCompleter.future;
     _connectionState = HubConnectionState.Connected;
   }
-  
+
   /// Stops the connection.
   ///
   /// Returns a Promise that resolves when the connection has been successfully terminated, or rejects with an error.

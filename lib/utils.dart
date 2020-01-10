@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 
 import 'ihub_protocol.dart';
@@ -31,10 +33,23 @@ Future<void> sendMessage(
   logger?.finest("($transportName transport) sending data.");
 
   //final responseType = content is String ? "arraybuffer" : "text";
-  SignalRHttpRequest req =
-      SignalRHttpRequest(content: content, headers: headers);
-  final response = await httpClient.post(url, options: req);
+  SignalRHttpRequest req = SignalRHttpRequest(content: content, headers: headers);
 
-  logger?.finest(
-      "($transportName transport) request complete. Response status: ${response.statusCode}.");
+  final postFuture = Future<void>(()
+  {
+    final completer = Completer<void>();
+
+    httpClient.post(url, options: req).then((r)
+    {
+      logger?.finest("($transportName transport) request complete. Response status: ${r.statusCode}.");
+      completer.complete();
+    }).catchError((error)
+    {
+      completer.completeError(error);
+    });
+
+    return completer.future;
+  });
+
+  return postFuture;
 }

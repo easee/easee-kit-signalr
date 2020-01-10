@@ -103,3 +103,13 @@ class InvalidPayloadException extends GeneralError {
     return message;
   }
 }
+
+class ConnectionError extends GeneralError
+{
+  ConnectionError(String errorMessage) : super(errorMessage);
+
+  String toString()
+  {
+    return message;
+  }
+}

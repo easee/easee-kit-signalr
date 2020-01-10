@@ -89,8 +89,23 @@ class ServerSentEventsTransport implements ITransport {
       return Future.error(
           new GeneralError("Cannot send until the transport is connected"));
     }
-    await sendMessage(_logger, "SSE", _httpClient, _url, _accessTokenFactory,
-        data, _logMessageContent);
+
+    final sendFuture = Future<void>(()
+    {
+      final completer = Completer<void>();
+
+      sendMessage(_logger, "SSE", _httpClient, _url, _accessTokenFactory, data, _logMessageContent).then((r)
+      {
+        completer.complete();
+      }).catchError((error)
+      {
+        completer.completeError(error);
+      });
+
+      return completer.future;
+    });
+
+    return sendFuture;
   }
 
   @override
