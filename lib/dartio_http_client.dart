@@ -95,6 +95,10 @@ class DartIOHttpClient extends SignalRHttpClient {
         }
       }
 
+			// TODO: IF you need to attach cookies, this is the place to do it, somehow.
+			// if (request.cookies != null && !request.cookies.isEmpty)
+			// 	httpReq.cookies = request.cookies;
+
       if (request.content != null) {
         httpReq.write(request.content);
       }
@@ -124,8 +128,7 @@ class DartIOHttpClient extends SignalRHttpClient {
           }
         }
 
-        return SignalRHttpResponse(httpResp.statusCode,
-            statusText: httpResp.reasonPhrase, content: content);
+        return SignalRHttpResponse(httpResp.statusCode,statusText: httpResp.reasonPhrase, content: content,cookies:httpResp.cookies);
       } else {
         return Future.error(HttpError(httpResp.reasonPhrase, httpResp.statusCode));
       }

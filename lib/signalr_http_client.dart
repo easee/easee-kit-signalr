@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'abort_controller.dart';
 import 'ihub_protocol.dart';
+
 
 /// Represents an HTTP request.
 class SignalRHttpRequest {
@@ -18,6 +20,8 @@ class SignalRHttpRequest {
 
   ///An object describing headers to apply to the request.
   MessageHeaders headers;
+
+	List<Cookie> cookies;
 
   // /** The XMLHttpRequestResponseType to apply to the request. */
   // responseType?: XMLHttpRequestResponseType;
@@ -36,12 +40,14 @@ class SignalRHttpRequest {
       Object content,
       MessageHeaders headers,
       IAbortSignal abortSignal,
+			List<Cookie> cookies,
       int timeout})
       : this.method = method,
         this.url = url,
         this.content = content,
         this.headers = headers,
         this.abortSignal = abortSignal,
+				this.cookies = cookies,
         this.timeout = timeout;
 }
 
@@ -58,6 +64,8 @@ class SignalRHttpResponse {
   /// May be a string (json) or an Uint8List (binary)
   final Object content;
 
+	final List<Cookie> cookies;
+
   //Methods
 
   ///Constructs a new instance of HttpResponse with the specified status code.
@@ -66,10 +74,11 @@ class SignalRHttpResponse {
   /// statusText: The status message of the response.
   /// content: The content of the response
   ///
-  SignalRHttpResponse(int statusCode, {String statusText = '', Object content})
+  SignalRHttpResponse(int statusCode, {String statusText = '', Object content, List<Cookie> cookies})
       : this.statusCode = statusCode,
         this.statusText = statusText,
-        this.content = content;
+        this.cookies = cookies,
+        this.content = content;				
 }
 
 /// Abstraction over an HTTP client.
