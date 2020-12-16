@@ -103,7 +103,25 @@ class DartIOHttpClient extends SignalRHttpClient {
         httpReq.write(request.content);
       }
 
-      final httpRespFuture = await Future.any([httpReq.close(), abortFuture]);
+      final httpRespFuture = await Future.any([httpReq.close(), abortFuture]).catchError((error)
+      {
+        httpError = error;
+      });
+
+      if (httpError != null)
+      {
+        if (httpError is SocketException)
+        {
+          var socketException = httpError as SocketException;
+          return Future.error(ConnectionError(socketException.message));
+        }
+        else if (httpError is HttpException)
+        {
+          var httpException = httpError as HttpException;
+          return Future.error(ConnectionError(httpException.message));
+        }
+      }
+
       final httpResp = httpRespFuture as HttpClientResponse;
       if (httpResp == null) {
         return Future.value(null);
