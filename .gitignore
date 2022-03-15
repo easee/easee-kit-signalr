@@ -4,6 +4,7 @@
 .vscode
 example/chatclient/ios/Flutter/flutter_export_environment.sh
 testapp/client/ios/Flutter/flutter_export_environment.sh
+android/local.properties
 
 .packages
 .dart_tool/
